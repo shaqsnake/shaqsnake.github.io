@@ -128,11 +128,11 @@
     
       <category term="python" scheme="http://shaqsnake.github.io/tags/python/"/>
     
+      <category term="design pattern" scheme="http://shaqsnake.github.io/tags/design-pattern/"/>
+    
       <category term="builder pattern" scheme="http://shaqsnake.github.io/tags/builder-pattern/"/>
     
       <category term="prototype" scheme="http://shaqsnake.github.io/tags/prototype/"/>
-    
-      <category term="design pattern" scheme="http://shaqsnake.github.io/tags/design-pattern/"/>
     
   </entry>
   
@@ -154,9 +154,9 @@
     
       <category term="python" scheme="http://shaqsnake.github.io/tags/python/"/>
     
-      <category term="design pattern" scheme="http://shaqsnake.github.io/tags/design-pattern/"/>
-    
       <category term="factory pattern" scheme="http://shaqsnake.github.io/tags/factory-pattern/"/>
+    
+      <category term="design pattern" scheme="http://shaqsnake.github.io/tags/design-pattern/"/>
     
   </entry>
   
