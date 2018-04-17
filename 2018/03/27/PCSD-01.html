@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="https://fonts.cat.net/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.6" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.6">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.6">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.6">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.6" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.6',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'YVZYJ3I4RS',
+      apiKey: '04e2954a2354e8d0e30eda3ab18598b0',
+      indexName: 'myBlogIndex',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"搜索...","hits_empty":"无法检索到包含 ${query} 关键字的文章","hits_stats":"共检索到 ${hits} 篇文章， 耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="CHARPTER 1 SystemsOVERVIEW系统设计者需要有一个全局的、整体的计算机系统观（包括软件方面和硬件方面的）。许多有价值的计算机应用程序都具备：  容错性 并发一致性 离散数据的关联性 信息的多样性 对错误和内部攻击的保护性 与许多用户的交互性  计算机系统设计的问题同样可以参考许多其它领域的设计问题，因为他们都有一定的共性。System design principles -">
+<meta name="keywords" content="读书笔记,computer design">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Principles of Computer System Design 读书笔记 I">
+<meta property="og:url" content="http://shaqsnake.github.io/2018/03/27/PCSD-01.html">
+<meta property="og:site_name" content="夏秋的博客">
+<meta property="og:description" content="CHARPTER 1 SystemsOVERVIEW系统设计者需要有一个全局的、整体的计算机系统观（包括软件方面和硬件方面的）。许多有价值的计算机应用程序都具备：  容错性 并发一致性 离散数据的关联性 信息的多样性 对错误和内部攻击的保护性 与许多用户的交互性  计算机系统设计的问题同样可以参考许多其它领域的设计问题，因为他们都有一定的共性。System design principles -">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p6ayvlg30.bkt.clouddn.com/屏幕快照 2018-03-24 下午11.44.40.png">
+<meta property="og:image" content="http://p6ayvlg30.bkt.clouddn.com/屏幕快照 2018-03-25 上午12.34.18.png">
+<meta property="og:updated_time" content="2018-04-11T14:13:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Principles of Computer System Design 读书笔记 I">
+<meta name="twitter:description" content="CHARPTER 1 SystemsOVERVIEW系统设计者需要有一个全局的、整体的计算机系统观（包括软件方面和硬件方面的）。许多有价值的计算机应用程序都具备：  容错性 并发一致性 离散数据的关联性 信息的多样性 对错误和内部攻击的保护性 与许多用户的交互性  计算机系统设计的问题同样可以参考许多其它领域的设计问题，因为他们都有一定的共性。System design principles -">
+<meta name="twitter:image" content="http://p6ayvlg30.bkt.clouddn.com/屏幕快照 2018-03-24 下午11.44.40.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="夏秋的博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://shaqsnake.github.io/2018/03/27/PCSD-01.html"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Principles of Computer System Design 读书笔记 I | 夏秋的博客</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-48273205-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-48273205-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> 
+
+<div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">夏秋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Code Monkey's Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+</li>
+
+      
+        
+        
+          
+  <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+</li>
+
+      
+        
+        
+          
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+</li>
+
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shaqsnake.github.io/2018/03/27/PCSD-01.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="夏秋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="夏秋的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Principles of Computer System Design 读书笔记 I</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T00:00:00+08:00">2018-03-27</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/03/27/PCSD-01.html" class="leancloud_visitors" data-flag-title="Principles of Computer System Design 读书笔记 I">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计：</span>
+                
+                <span title="字数统计">7.7k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长&asymp;</span>
+                
+                <span title="阅读时长">0:39</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h1 id="CHARPTER-1-Systems"><a href="#CHARPTER-1-Systems" class="headerlink" title="CHARPTER 1 Systems"></a>CHARPTER 1 Systems</h1><h2 id="OVERVIEW"><a href="#OVERVIEW" class="headerlink" title="OVERVIEW"></a>OVERVIEW</h2><p>系统设计者需要有一个全局的、整体的计算机系统观（包括软件方面和硬件方面的）。<br>许多有价值的计算机应用程序都具备：</p>
+<ul>
+<li>容错性</li>
+<li>并发一致性</li>
+<li>离散数据的关联性</li>
+<li>信息的多样性</li>
+<li>对错误和内部攻击的保护性</li>
+<li>与许多用户的交互性</li>
+</ul>
+<p>计算机系统设计的问题同样可以参考许多其它领域的设计问题，因为他们都有一定的共性。<br><strong>System design principles</strong> - 一种可以帮助系统设计者避免犯错的规则，指导或者经验，并不是不能违背的条例。</p>
+<blockquote>
+<p><strong>Avoid excessive generality</strong><br>If it’s good for everything, it’s good for nothing.</p>
+</blockquote>
+<p><em>注解：系统设计的精髓——Everything is Tradeoff。</em></p>
+<a id="more"></a>
+<h2 id="1-1-SYSTEMS-AND-COMPLEXITY"><a href="#1-1-SYSTEMS-AND-COMPLEXITY" class="headerlink" title="1.1 SYSTEMS AND COMPLEXITY"></a>1.1 SYSTEMS AND COMPLEXITY</h2><h3 id="1-1-1-Common-Problems-of-Systems-in-Many-Fields"><a href="#1-1-1-Common-Problems-of-Systems-in-Many-Fields" class="headerlink" title="1.1.1 Common Problems of Systems in Many Fields"></a>1.1.1 Common Problems of Systems in Many Fields</h3><p>各式各样的系统所面临的首要问题主要包括四类：</p>
+<ul>
+<li>Emergent properties（隐性的特征）</li>
+<li>Propagation of effects（效应的传播）</li>
+<li>Incommensurate scaling（不相称的扩长<sup id="fnref:0"><a href="#fn:0" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="[Scalability](https://en.wikipedia.org/wiki/Scalability) 和 Scaling 在计算机术语中都是特指系统在所运行所需的资源增加或减少的同时，系统性能可以成比例的增加或降低的可扩展性或伸缩性。但这里用“扩长”更能表达原文的本意。">[0]</span></a></sup>）</li>
+<li>Trade-offs（权衡、取舍）</li>
+</ul>
+<h4 id="1-1-1-1-Emergent-Properties"><a href="#1-1-1-1-Emergent-Properties" class="headerlink" title="1.1.1.1 Emergent Properties"></a>1.1.1.1 Emergent Properties</h4><p><strong>Emergent properties</strong> - 那些平时系统中单个组件内并不明显，但当组件进行组合后却能突然显现的属性或特征。</p>
+<h4 id="1-1-1-2-Propagation-of-Effects"><a href="#1-1-1-2-Propagation-of-Effects" class="headerlink" title="1.1.1.2 Propagation of Effects"></a>1.1.1.2 Propagation of Effects</h4><p><strong>Propagation of Effects</strong> - 系统一端看似很小的改动或异常却造成了系统远端另一部分的破坏。<br><em>注解：类似蝴蝶效应 <sup id="fnref:1"><a href="#fn:1" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="[蝴蝶效应](https://zh.wikipedia.org/wiki/%E8%9D%B4%E8%9D%B6%E6%95%88%E5%BA%94) (Butterfly effect)是指在一个动态系统中，初始条件下微小的变化能带动整个系统的长期的巨大的连锁反应，是一种混沌的现象。“蝴蝶效应”在混沌学中也常出现。">[1]</span></a></sup>。</em></p>
+<p>所以在绝大多数系统中一个重要的原则就是药尽量限制住系统错误带来的冲击。</p>
+<h4 id="1-1-1-3-Incommensurate-Scaling"><a href="#1-1-1-3-Incommensurate-Scaling" class="headerlink" title="1.1.1.3 Incommensurate Scaling"></a>1.1.1.3 Incommensurate Scaling</h4><p><strong>Incommensurate Scaling</strong> - 当系统在体积或速度上扩大时，并非系统的所有部分都会成比例的增长，最终系统会停止运作。<br><em>注解：就是事物中每个部分的增长或缩小的速率都是不一样的，在自然界和生活中很容易找到相关的例子。</em></p>
+<h4 id="1-1-1-4-Trade-offs"><a href="#1-1-1-4-Trade-offs" class="headerlink" title="1.1.1.4 Trade-offs"></a>1.1.1.4 Trade-offs</h4><p><strong>Trade-offs</strong> - 现实中有利的因素总是有限的，所以设计中的挑战就是首先最大化这些有利因素，避免浪费他们，最后把他们放在最能提升系统的地方。</p>
+<p><strong>Waterbed effect</strong> - 水床效应，即你在处理某些问题时按下去一个问题，另一个问题又会浮现出来。文中列举了芯片设计中最关键的“性能-功耗-面积”问题<sup id="fnref:2"><a href="#fn:2" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="芯片设计时往往要权衡性能（频率越高性能越好）、功耗（低功耗，特别是手机或便携设备），面积（芯片的制造成本）三者之间的关系，达到最优的结果。">[2]</span></a></sup>。</p>
+<p><strong>Binary classification</strong> - 在分类问题上，我们有时因为无法通过一个显现的属性或特征来区分出两个类别的事物，只能通过降低容错性来提升划分的准确性。<br><em>注解：机器学习中的分类问题也类似。</em></p>
+<p>计算机系统设计还是一个很年轻的领域，并不像一些传统的领域如桥梁或建筑设计那样成熟，所以无法给出一些严格的规格一些或者精准的权衡条件来构造组合系统，只能通过一些特定（ad hoc）案列结合实际情况来分析。<br><em>注解：计算机系统很复杂，很多系统之间找不到一个通用的模型或设计理论，现实开发中的方法论也各不相同，比如大型的复杂项目会倾向于螺旋模型<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="[螺旋模型](https://zh.wikipedia.org/wiki/%E8%9E%BA%E6%97%8B%E6%A8%A1%E5%9E%8B)是一种演化软件开发过程模型，它兼顾了快速原型的迭代的特征以及瀑布模型的系统化与严格监控。螺旋模型最大的特点在于引入了其他模型不具备的风险分析，使软件在无法排除重大风险时有机会停止，以减小损失。">[3]</span></a></sup>，而一些小型的互联网项目却选择更容易迭代的敏捷模型<sup id="fnref:4"><a href="#fn:4" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="[敏捷软件开发](https://zh.wikipedia.org/wiki/%E6%95%8F%E6%8D%B7%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91)，又称敏捷开发，是一种从1990年代开始逐渐引起广泛关注的一些新型软件开发方法，是一种应对快速变化的需求的一种软件开发能力。它们的具体名称、理念、过程、术语都不尽相同，相对于“非敏捷”，更强调程序员团队与业务专家之间的紧密协作、面对面的沟通（认为比书面的文档更有效）、频繁交付新的软件版本、紧凑而自我组织型的团队、能够很好地适应需求变化的代码编写和团队组织方法，也更注重软件开发过程中人的作用。">[4]</span></a></sup>。</em></p>
+<h3 id="1-1-2-Systems-Components-Interfaces-and-Environments"><a href="#1-1-2-Systems-Components-Interfaces-and-Environments" class="headerlink" title="1.1.2 Systems, Components, Interfaces, and Environments"></a>1.1.2 Systems, Components, Interfaces, and Environments</h3><blockquote>
+<p>A system is a set of interconnected components that has an expected behavior observed at the interface with its enviornment.</p>
+</blockquote>
+<p>一个系统是一些相互交互的组件的集合，这些组件通过特定的接口与和其环境进行交互，且他们间的交互能产生一些特定的可被观察到的行为。<br><em>注解：和系统有交互但并不属于系统本身的就是环境。</em></p>
+<p>对同一套事物用不同的角度去观察可以得到完全不同的系统，这样他们所包含的组件、接口和环境也是不相同的。这时一个系统中的一个组件在某些情景下很可能是另外一个完整的系统。<br><em>注解：比如汽车中发动机只是汽车整系统的一个组件，但在另一些研究发动机系统的情景下它就是一个完整的发动机系统。</em></p>
+<p><strong>Subsystem</strong> - 子系统，当一个系统在特定情境下是另一个系统的组件。</p>
+<p><strong>computer system</strong> or <strong>information system</strong> - 一个能自动控制存储、处理和信息交互的系统，比如：</p>
+<ul>
+<li>一个台个人电脑</li>
+<li>汽车中的动力控制器</li>
+<li>电话系统</li>
+<li>互联网</li>
+<li>飞机票订购系统</li>
+<li>宇宙飞船着陆控制系统</li>
+<li>一个万维网网站</li>
+</ul>
+<h3 id="1-1-3-Complexity"><a href="#1-1-3-Complexity" class="headerlink" title="1.1.3 Complexity"></a>1.1.3 Complexity</h3><p>复杂虽然就暗指“难以理解”，但并没有一种精确的方法来测量系统的复杂度，也没有一个准确的定义来描述复杂度，只能通过一些模糊的特征，比如：</p>
+<ol>
+<li>包含大量的组件；</li>
+<li>拥有大量的交互；</li>
+<li>展现出许多的无规律性；</li>
+<li>冗长的自我描述；</li>
+<li>需要许多设计者、实现者或维护者来工作。</li>
+</ol>
+<p>文中举了一个小镇图书馆和一个大学图书馆的例子来说明了上面五个特征。</p>
+<h2 id="1-2-SOURCES-OF-COMPLEXITY"><a href="#1-2-SOURCES-OF-COMPLEXITY" class="headerlink" title="1.2 SOURCES OF COMPLEXITY"></a>1.2 SOURCES OF COMPLEXITY</h2><p>复杂性的根源主要有两个：</p>
+<ul>
+<li>设计者要系统满足太多的需求；</li>
+<li>需要让系统维持在一个高效的使用效率。</li>
+</ul>
+<h3 id="1-2-1-Cascading-and-Interacting-Requirements"><a href="#1-2-1-Cascading-and-Interacting-Requirements" class="headerlink" title="1.2.1 Cascading and Interacting Requirements"></a>1.2.1 Cascading and Interacting Requirements</h3><blockquote>
+<p><strong>Principle of escalating complexity</strong><br>Adding a requirement increases complexity out of proportion.</p>
+</blockquote>
+<p>图 1.1 展现了复杂度随着需求的增加而呈现出指数级增长的趋势。</p>
+<p><img src="http://p6ayvlg30.bkt.clouddn.com/屏幕快照 2018-03-24 下午11.44.40.png" alt=""></p>
+<p>图中最重要的一点是复杂度的边界是模糊的：当你往系统里添加各种功能和需求时，并没有一个明确的边界提示你应该停下来了。</p>
+<p><strong>Generality</strong> - 通用性，即指用一个单一的系统去满足各种不同的需求，也可以认为去“适应各种多变的环境”。</p>
+<p>要求系统通用往往是造成复杂性的原因之一，设计者这时就需要去权衡和判断到底需要满足多少程度的通用性。</p>
+<blockquote>
+<p><strong>Avoid excessive generality</strong><br>If it is good for everything, it is good for nothing.</p>
+</blockquote>
+<p>不过有一些特例就是要巧妙的把子系统设计得更通用化来让异常降到最低。</p>
+<p>复杂性的另一个原因就是之前提到的不相称的扩长。</p>
+<p>最后，造成复杂性的主要原因就是需求的变化，比如要求系统中的组件进行升级等。系统设计者不可能预测到未来系统的各种变化，当一些未预测到的需求出现时，就给系统带来了额外的复杂度。还有一些复杂的系统在作出一些微小的改动时，比如修复一个bug，就会因为复杂度的陡然增长而引出一些新的bug。</p>
+<h3 id="1-2-2-Maintaining-High-Utilization"><a href="#1-2-2-Maintaining-High-Utilization" class="headerlink" title="1.2.2 Maintaining High Utilization"></a>1.2.2 Maintaining High Utilization</h3><p>一个最最常见的带来复杂度的需求就是要求系统能够高性能或高效率。</p>
+<blockquote>
+<p><strong>The law of diminishing returns</strong><br>The more one improves some measure of goodness, the more effort the next improvement will require.</p>
+</blockquote>
+<p>一个意图高效率去利用资源而出现的最显而易见的现象就是：越想把所有的资源用到极致，就越需要有更复杂的策略来利用、安置和调配这些资源。文中举了汽车能在红灯右转和机场调度飞机起降的例子来说明高效率就需要更复杂的调度系统。</p>
+<p>图 1.2 高效率和复杂度之间的关系：</p>
+<p><img src="http://p6ayvlg30.bkt.clouddn.com/屏幕快照 2018-03-25 上午12.34.18.png" alt=""><br><em>注解：图 1.1 和 图 2.2 是类似的。</em></p>
+<h2 id="1-3-Coping-with-Complexity"><a href="#1-3-Coping-with-Complexity" class="headerlink" title="1.3 Coping with Complexity"></a>1.3 Coping with Complexity</h2><p>解决系统设计中问题复杂度的方法有：</p>
+<ul>
+<li>modularity（模块化）</li>
+<li>abstraction (抽象化）</li>
+<li>layering (层次化）</li>
+<li>hierarchy（结构化）</li>
+</ul>
+<p><em>注解：和很多其它领域的设计方法是相通的，比如芯片设计和建筑设计等</em></p>
+<h3 id="1-3-1-Modularity"><a href="#1-3-1-Modularity" class="headerlink" title="1.3.1 Modularity"></a>1.3.1 Modularity</h3><p>最简单且最重要的减少复杂度的方法就是“分治法（divide-and-conquer)”：把整个系统看做一堆交互的子系统即模块，来分析和设计。 文中举了如果把一个系统分成K个模块，debug的时间可以从 N^2 下降到 N^2 /K：</p>
+<p>$ DebugTime \approx \dfrac{N^2}{K} $</p>
+<p>模块化的好处还有可以轻松的替换系统中的模块，简化系统的升级过程。</p>
+<blockquote>
+<p><strong>The unyielding foundations rule</strong><br>It is easier to change a module than to change the modularity.</p>
+</blockquote>
+<p><em>注解：因为接口的更换会影响多个相关的模块，所以能否正确的模块化很重要。</em></p>
+<h3 id="1-3-2-Abstraction"><a href="#1-3-2-Abstraction" class="headerlink" title="1.3.2 Abstraction"></a>1.3.2 Abstraction</h3><p><strong>Abstraction</strong> - 抽象化，在模块化过程中找到最佳的边界，是的模块之间的交互较少且相互的影响也少。更通俗的说，模块会被外界看做一个整体，之关心它的外部接口规格而忽略其内部结构。</p>
+<p><strong>functional modularity</strong> - 通过抽象方式来模块化。</p>
+<p><em>注解：合理地抽象化模块堆限制系统错误很重要，因为有效地控制住了模块间的相互影响。</em></p>
+<blockquote>
+<p><strong>The robustness principle</strong><br>Be tolerant of inputs and strict on outputs.</p>
+</blockquote>
+<p><em>注解：模块接口设计要宽进严出，尽可能地大范围接受输入，同时能抑制住错误的输出。</em></p>
+<p><strong>The robustness principle</strong>在计算机系统设计中扮演者重要的角色，特别是在人机交互，网络协议和容错系统中，构成了数字逻辑世界的基础。与之相关且同等重要的设计原理是：</p>
+<blockquote>
+<p><strong>The safety margin principle</strong><br>Keep track of the distance to the cliff, or you may fall over the edge.</p>
+</blockquote>
+<p><em>注解：关注模块输入的边界值。</em></p>
+<p>接受任何一个合理的输入，但关注那些已经快超出限制范围的值，在其失效前尝试修复它。</p>
+<h3 id="1-3-3-Layering"><a href="#1-3-3-Layering" class="headerlink" title="1.3.3 Layering"></a>1.3.3 Layering</h3><p><strong>layering</strong> - 层次化，通过某种方式把模块组织在一起以减少模块间的相互连接。</p>
+<p><em>注解：架构设计中经常看到的分成设计，比如持久层，业务层，展示层等等，还有计算机体系架构<sup id="fnref:5"><a href="#fn:5" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="计算机系统体系架构可以简单分为三层：硬件、操作系统和应用程序。">[5]</span></a></sup>、网络七层架构（OSI）<sup id="fnref:6"><a href="#fn:6" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="[开放式系统互联通信参考模型](https://zh.wikipedia.org/wiki/OSI%E6%A8%A1%E5%9E%8B)（英语：Open System Interconnection Reference Model，缩写为 OSI），共有七层架构。">[6]</span></a></sup>也类似。</em></p>
+<p>层次中的模块除了和同层次中的模块交互外，还可以和紧邻自己的“上层”和“下层”中的模块交互。</p>
+<h3 id="1-3-4-Hierarchy"><a href="#1-3-4-Hierarchy" class="headerlink" title="1.3.4 Hierarchy"></a>1.3.4 Hierarchy</h3><p><strong>hierarchy</strong> - 结构化，从低向上地将模块逐渐组合成子系统，子系统在合成更大的子系统，最终形成一个完整的系统。</p>
+<p><em>注解：本书中这里的hierarchy是通过bottom-up的方式来阐述的，现实中还有一种top-down的说法。</em></p>
+<p>结构化的最大优点就是杜绝了模块随意与其它模块交互的情况，而是只关注其子系统中模块的的接口。</p>
+<h3 id="1-3-5-Putting-it-Back-Together-Names-Make-Connections"><a href="#1-3-5-Putting-it-Back-Together-Names-Make-Connections" class="headerlink" title="1.3.5 Putting it Back Together: Names Make Connections"></a>1.3.5 Putting it Back Together: Names Make Connections</h3><p>在计算机系统中，一个模块通过赋予另一个模块职责（命名）而将模块之间联系起来。</p>
+<p><strong>Binding</strong> -  从多种方式中选择一个合适的实现方式来连接各种模块。</p>
+<p>系统设计者有时为了保证系统的高灵活性，会等所有模块都齐备后才开始绑定模块。推迟绑定的一种方式就是指定其职责（命名）而并不去真正地实现它们。</p>
+<p><strong>indirection</strong> - 重定向，通过命名的方式来更换绑定（binding）。</p>
+<blockquote>
+<p><strong>Decouple modules with indirection</strong><br>Indirection supports replaceability.</p>
+</blockquote>
+<h2 id="1-4-COMPUTER-SYSTEMS-ARE-THE-SAME-BUT-DIFFERENT"><a href="#1-4-COMPUTER-SYSTEMS-ARE-THE-SAME-BUT-DIFFERENT" class="headerlink" title="1.4 COMPUTER SYSTEMS ARE THE SAME BUT DIFFERENT"></a>1.4 COMPUTER SYSTEMS ARE THE SAME BUT DIFFERENT</h2><p>计算机系统设计和其它领域的系统设计有共通的地方，但计算机系统却在两个地方与其它系统天差地别：</p>
+<ul>
+<li>计算机系统的复杂度没有具体的物理定律来约束和限制；</li>
+<li>计算机技术的发展无法准确的预测。</li>
+</ul>
+<h3 id="1-4-1-Computer-Systems-have-no-Nearby-Bounds-on-Composition"><a href="#1-4-1-Computer-Systems-have-no-Nearby-Bounds-on-Composition" class="headerlink" title="1.4.1 Computer Systems have no Nearby Bounds on Composition"></a>1.4.1 Computer Systems have no Nearby Bounds on Composition</h3><p>由于数字硬件（没有模拟硬件的噪声影响）和软件（无物理限制）上天然没有壁垒，一个胆大的设计者会误用模块化、抽象化、层次化和结构化这些工具还构造出一个复杂的庞然大物。不同其他领悟的系统，计算机系统的组合极限甚至可以等同于设计者思维的极限。<br><em>注解：只有思维能束缚住计算机设计系统的大小，设计者需要自己来为系统划定边界。</em></p>
+<h3 id="1-4-2-d-technology-dt-is-Unprecedented"><a href="#1-4-2-d-technology-dt-is-Unprecedented" class="headerlink" title="1.4.2 d(technology)/dt is Unprecedented"></a>1.4.2 d(technology)/dt is Unprecedented</h3><blockquote>
+<p><strong>The incommensurate scaling rule</strong><br>Changing any system parameter by a factor of 10 usually requires a new design.</p>
+</blockquote>
+<p>计算机行业的日新月异也导致了系统的更新换代更频繁，设计师更关注新的设计而无暇顾及老系统的存在的问题。而且技术的高速发展也为很多问题带来了一种暴力的解决方式（花更多钱，等更快的硬件，用最新的算法），反而在计算机系统设计中也是一种正确的选择。<br><em>注解：人吃透计算机系统设计中奥妙的时间远远追不上整个行业技术更新换代的时间。经常一些涌现出来的新技术很容易就可以替代以前的设计方式。</em></p>
+<h2 id="1-5-COPING-WITH-COMPLEXITY-II"><a href="#1-5-COPING-WITH-COMPLEXITY-II" class="headerlink" title="1.5 COPING WITH COMPLEXITY II"></a>1.5 COPING WITH COMPLEXITY II</h2><p>因为计算机系统如此复杂，所以设计者还需要其他额外的方法。</p>
+<h3 id="1-5-1-Why-Modularity-Abstraction-Layering-and-Hierarchy-aren’t-Enough"><a href="#1-5-1-Why-Modularity-Abstraction-Layering-and-Hierarchy-aren’t-Enough" class="headerlink" title="1.5.1 Why Modularity, Abstraction, Layering, and Hierarchy aren’t Enough."></a>1.5.1 Why Modularity, Abstraction, Layering, and Hierarchy aren’t Enough.</h3><p>上面提到的四种设计方法是需要用户很清楚系统应该怎么来设计时下才能发挥作用，但在现实中计算机系统日新月异的变化下，设计者很难如大海捞针般去选择：</p>
+<ul>
+<li><strong>正确</strong>的模块化；</li>
+<li><strong>正确</strong>的抽象化；</li>
+<li><strong>正确</strong>的层次化；</li>
+<li><strong>正确</strong>的结构化。</li>
+</ul>
+<p>即使有一些所谓的设计原则和指导，也都来自与之前系统的一些经验。所以设计者又找到了另一个处理复杂度的技术 —— 迭代。</p>
+<h3 id="1-5-2-Iteration"><a href="#1-5-2-Iteration" class="headerlink" title="1.5.2 Iteration"></a>1.5.2 Iteration</h3><p>迭代就是先从一个最简单，满足最基本需求的系统开始设计开发，然后逐渐扩展和完善其它的需求的过程。成的迭代方法需要有正确的远见，其中就包含了两条设计的原理：</p>
+<blockquote>
+<p><strong>Design for Iteration</strong><br>You won’t get it right the first time, so make it easy to change.</p>
+</blockquote>
+<p><em>注解：迭代就要去拥抱变化，了解自己的系统在需要改变是应该调整哪些地方。</em></p>
+<ul>
+<li>Take small steps.（小心谨慎）</li>
+<li>Don’t rush.(循序渐进)</li>
+<li>Plan for feedback.(感知反馈）</li>
+<li>Study failures.（吸取教训）</li>
+</ul>
+<blockquote>
+<p><strong>Keep digging</strong><br>Complex systems fails for complex reasons.</p>
+</blockquote>
+<p>在迭代的实施过程也会受到一些阻碍，主要包括：</p>
+<ul>
+<li>在迭代过程中容易迷失方向，难把控全局；</li>
+<li>迭代中报喜不报忧，坏消息会被有意或无意的隐藏起来；</li>
+<li>模块的重构有较大阻力，一个原因可能是系统本身重构难度大，另一个原因则是设计者难以割舍自己之前的付出；</li>
+<li>初期迭代的成功让设计者低估了后面的困难，过度地增加新功能，导致了<strong>second-system effect</strong><sup id="fnref:7"><a href="#fn:7" rel="footnote"><span class="hint--top-right hint--error hint--large" aria-label="[第二系统效应](https://zh.wikipedia.org/wiki/第二系統效應)(英语：second-system effect），又称第二系统症候群（英语： second-system syndrome），由佛瑞德·布鲁克斯在《人月神话》中提出的经验概括。它认为，在完成一个小型、优雅而成功的系统之后，人们倾向于对下一个计划有过度的期待，可能因此建造出一个巨大、有各种特色的怪兽系统。第二系统效应可能造成软件专案计划过度设计，产生太多变数，过度复杂，无法达成期待，并因而失败。">[7]</span></a></sup>。</li>
+</ul>
+<h3 id="1-5-3-Keep-it-Simple"><a href="#1-5-3-Keep-it-Simple" class="headerlink" title="1.5.3 Keep it Simple"></a>1.5.3 Keep it Simple</h3><p>最后也是最重要的，一个处理复杂度最行之有效的方法，同时也是最知易行难的方法就是——简单化。但就如前面提到的计算机系统没有明显的自然和物理边界来限制住它的复杂性，所以需要设计者来认为的设定这些边界，但这确实对于设计者来说太有挑战性了。</p>
+<blockquote>
+<p><strong>Adopt sweeping simplifications</strong><br>So you can see what you are doing.</p>
+</blockquote>
+<p><em>注解：设计者要时刻把”如何让系统更简单“放在心上。</em></p>
+<h2 id="WHAT-THE-REST-OF-THIS-BOOK-IS-ABOUT"><a href="#WHAT-THE-REST-OF-THIS-BOOK-IS-ABOUT" class="headerlink" title="WHAT THE REST OF THIS BOOK IS ABOUT"></a>WHAT THE REST OF THIS BOOK IS ABOUT</h2><ul>
+<li>The pervasive importance of modularity(无处不在的模块化）</li>
+<li>Principle-based system design（理论指导实践）</li>
+<li>Making system robust and resilient（让系统更健壮，有更强的适应性）</li>
+</ul>
+<div id="footnotes"><hr><div id="footnotelist"><ol style="list-style: none; padding-left: 0; margin-left: 40px"><li id="fn:0"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">0.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;"><a href="https://en.wikipedia.org/wiki/Scalability" target="_blank" rel="noopener">Scalability</a> 和 Scaling 在计算机术语中都是特指系统在所运行所需的资源增加或减少的同时，系统性能可以成比例的增加或降低的可扩展性或伸缩性。但这里用“扩长”更能表达原文的本意。<a href="#fnref:0" rev="footnote"> ↩</a></span></li><li id="fn:1"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;"><a href="https://zh.wikipedia.org/wiki/%E8%9D%B4%E8%9D%B6%E6%95%88%E5%BA%94" target="_blank" rel="noopener">蝴蝶效应</a> (Butterfly effect)是指在一个动态系统中，初始条件下微小的变化能带动整个系统的长期的巨大的连锁反应，是一种混沌的现象。“蝴蝶效应”在混沌学中也常出现。<a href="#fnref:1" rev="footnote"> ↩</a></span></li><li id="fn:2"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;">芯片设计时往往要权衡性能（频率越高性能越好）、功耗（低功耗，特别是手机或便携设备），面积（芯片的制造成本）三者之间的关系，达到最优的结果。<a href="#fnref:2" rev="footnote"> ↩</a></span></li><li id="fn:3"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;"><a href="https://zh.wikipedia.org/wiki/%E8%9E%BA%E6%97%8B%E6%A8%A1%E5%9E%8B" target="_blank" rel="noopener">螺旋模型</a>是一种演化软件开发过程模型，它兼顾了快速原型的迭代的特征以及瀑布模型的系统化与严格监控。螺旋模型最大的特点在于引入了其他模型不具备的风险分析，使软件在无法排除重大风险时有机会停止，以减小损失。<a href="#fnref:3" rev="footnote"> ↩</a></span></li><li id="fn:4"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;"><a href="https://zh.wikipedia.org/wiki/%E6%95%8F%E6%8D%B7%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91" target="_blank" rel="noopener">敏捷软件开发</a>，又称敏捷开发，是一种从1990年代开始逐渐引起广泛关注的一些新型软件开发方法，是一种应对快速变化的需求的一种软件开发能力。它们的具体名称、理念、过程、术语都不尽相同，相对于“非敏捷”，更强调程序员团队与业务专家之间的紧密协作、面对面的沟通（认为比书面的文档更有效）、频繁交付新的软件版本、紧凑而自我组织型的团队、能够很好地适应需求变化的代码编写和团队组织方法，也更注重软件开发过程中人的作用。<a href="#fnref:4" rev="footnote"> ↩</a></span></li><li id="fn:5"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">5.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;">计算机系统体系架构可以简单分为三层：硬件、操作系统和应用程序。<a href="#fnref:5" rev="footnote"> ↩</a></span></li><li id="fn:6"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">6.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;"><a href="https://zh.wikipedia.org/wiki/OSI%E6%A8%A1%E5%9E%8B" target="_blank" rel="noopener">开放式系统互联通信参考模型</a>（英语：Open System Interconnection Reference Model，缩写为 OSI），共有七层架构。<a href="#fnref:6" rev="footnote"> ↩</a></span></li><li id="fn:7"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">7.</span><span style="display: inline-block; vertical-align: top; margin-left: 10px;"><a href="https://zh.wikipedia.org/wiki/%E7%AC%AC%E4%BA%8C%E7%B3%BB%E7%B5%B1%E6%95%88%E6%87%89" target="_blank" rel="noopener">第二系统效应</a>(英语：second-system effect），又称第二系统症候群（英语： second-system syndrome），由佛瑞德·布鲁克斯在《人月神话》中提出的经验概括。它认为，在完成一个小型、优雅而成功的系统之后，人们倾向于对下一个计划有过度的期待，可能因此建造出一个巨大、有各种特色的怪兽系统。第二系统效应可能造成软件专案计划过度设计，产生太多变数，过度复杂，无法达成期待，并因而失败。<a href="#fnref:7" rev="footnote"> ↩</a></span></li></ol></div></div>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>夏秋</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://shaqsnake.github.io/2018/03/27/PCSD-01.html" title="Principles of Computer System Design 读书笔记 I">http://shaqsnake.github.io/2018/03/27/PCSD-01.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/computer-design/" rel="tag"># computer design</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/24/surf-internet-in-vm-with-ss.html" rel="next" title="虚拟机通过Mac主机访问SS">
+                <i class="fa fa-chevron-left"></i> 虚拟机通过Mac主机访问SS
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/01/PCSD-02.html" rel="prev" title="Principles of Computer System Design 读书笔记 II">
+                Principles of Computer System Design 读书笔记 II <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zNTMwMC8xMTgzNg=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="夏秋" />
+            
+              <p class="site-author-name" itemprop="name">夏秋</p>
+              <p class="site-description motion-element" itemprop="description">架构师之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/shaqsnake" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:shaqsnake@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CHARPTER-1-Systems"><span class="nav-number">1.</span> <span class="nav-text">CHARPTER 1 Systems</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OVERVIEW"><span class="nav-number">1.1.</span> <span class="nav-text">OVERVIEW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-SYSTEMS-AND-COMPLEXITY"><span class="nav-number">1.2.</span> <span class="nav-text">1.1 SYSTEMS AND COMPLEXITY</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-Common-Problems-of-Systems-in-Many-Fields"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1.1 Common Problems of Systems in Many Fields</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1-1-Emergent-Properties"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">1.1.1.1 Emergent Properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1-2-Propagation-of-Effects"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">1.1.1.2 Propagation of Effects</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1-3-Incommensurate-Scaling"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">1.1.1.3 Incommensurate Scaling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1-4-Trade-offs"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">1.1.1.4 Trade-offs</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-Systems-Components-Interfaces-and-Environments"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.1.2 Systems, Components, Interfaces, and Environments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-Complexity"><span class="nav-number">1.2.3.</span> <span class="nav-text">1.1.3 Complexity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-SOURCES-OF-COMPLEXITY"><span class="nav-number">1.3.</span> <span class="nav-text">1.2 SOURCES OF COMPLEXITY</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-Cascading-and-Interacting-Requirements"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.2.1 Cascading and Interacting Requirements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-Maintaining-High-Utilization"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.2.2 Maintaining High Utilization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-Coping-with-Complexity"><span class="nav-number">1.4.</span> <span class="nav-text">1.3 Coping with Complexity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-Modularity"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.3.1 Modularity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-Abstraction"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.3.2 Abstraction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-3-Layering"><span class="nav-number">1.4.3.</span> <span class="nav-text">1.3.3 Layering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-4-Hierarchy"><span class="nav-number">1.4.4.</span> <span class="nav-text">1.3.4 Hierarchy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-5-Putting-it-Back-Together-Names-Make-Connections"><span class="nav-number">1.4.5.</span> <span class="nav-text">1.3.5 Putting it Back Together: Names Make Connections</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-COMPUTER-SYSTEMS-ARE-THE-SAME-BUT-DIFFERENT"><span class="nav-number">1.5.</span> <span class="nav-text">1.4 COMPUTER SYSTEMS ARE THE SAME BUT DIFFERENT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-1-Computer-Systems-have-no-Nearby-Bounds-on-Composition"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.4.1 Computer Systems have no Nearby Bounds on Composition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-2-d-technology-dt-is-Unprecedented"><span class="nav-number">1.5.2.</span> <span class="nav-text">1.4.2 d(technology)/dt is Unprecedented</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-COPING-WITH-COMPLEXITY-II"><span class="nav-number">1.6.</span> <span class="nav-text">1.5 COPING WITH COMPLEXITY II</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-1-Why-Modularity-Abstraction-Layering-and-Hierarchy-aren’t-Enough"><span class="nav-number">1.6.1.</span> <span class="nav-text">1.5.1 Why Modularity, Abstraction, Layering, and Hierarchy aren’t Enough.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-2-Iteration"><span class="nav-number">1.6.2.</span> <span class="nav-text">1.5.2 Iteration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-3-Keep-it-Simple"><span class="nav-number">1.6.3.</span> <span class="nav-text">1.5.3 Keep it Simple</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WHAT-THE-REST-OF-THIS-BOOK-IS-ABOUT"><span class="nav-number">1.7.</span> <span class="nav-text">WHAT THE REST OF THIS BOOK IS ABOUT</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate"> 
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">夏秋</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">33k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">2:44</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.6"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.6"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.6"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.6"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.6"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.6"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.6"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.6"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("lXbkOuC7GfKvxK8s2idwUN1G-gzGzoHsz", "hPKwBwxTXSIoiv5GSwHwHaMI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! See more at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see here how to solve it: https://github.com/theme-next/hexo-leancloud-counter-security. \n But you also can use LeanCloud without security, by set \'security\' option to \'false\'.');
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
